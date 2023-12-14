@@ -1,0 +1,61 @@
+---
+- name: Install and start Apache
+  hosts: pid003
+  become: true
+  vars_files:
+    - /home/dleroux/ansible/gpt-molecule/two-vms/playbooks/vault.yml
+  tasks:
+
+    - name: Register with activationkey and consume subscriptions matching Red Hat Enterprise Server or Red Hat Virtualization
+      community.general.redhat_subscription:
+        state: present
+        activationkey: "{{ mykey }}"
+        org_id: "{{ myorg_id }}"
+
+    - name: Install httpd
+      yum:
+        name: httpd
+        state: present
+
+    - name: Generate index.html
+      copy:
+        content: "Apache Web server running"
+        dest: /var/www/html/index.html
+        owner: apache
+        group: apache
+        mode: '0644'
+
+    - name: Start httpd
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+        daemon_reload: yes
+
+- name: Install MySQL on pid004
+  hosts: pid004
+  become: true
+  vars_files:
+    - /home/dleroux/ansible/gpt-molecule/two-vms/playbooks/vault.yml
+
+  tasks:
+
+    - name: Register with activationkey and consume subscriptions matching Red Hat Enterprise Server or Red Hat Virtualization
+      community.general.redhat_subscription:
+        state: present
+        activationkey: "{{ mykey }}"
+        org_id: "{{ myorg_id }}"
+
+    - name: Install MySQL
+      ansible.builtin.yum:
+        name: "{{ item }}"
+        state: present
+      loop: 
+        - mariadb
+        - mariadb-server
+
+    - name: Ensure MySQL is started and enabled
+      ansible.builtin.service:
+        name: mariadb
+        state: started
+        enabled: yes

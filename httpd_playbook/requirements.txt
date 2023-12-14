@@ -1,0 +1,8 @@
+ansible-core
+ansible-lint
+yamllint
+colorama
+molecule
+molecule-plugins[podman]
+molecule-plugins[vagrant]
+python-vagrant

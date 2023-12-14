@@ -1,0 +1,24 @@
+---
+- name: Verify Apache
+  hosts: pid003
+
+  tasks:
+    - name: Verify Apache is running web requests
+      ansible.builtin.uri:
+        url: http://pid003
+        return_content: yes
+      register: web_response
+
+#    - name: Debug web response
+#      debug:
+#        var: web_response
+
+    - name: Check if status code is 200
+      assert:
+        that:
+          - web_response.status is defined
+          - web_response.status == 200
+        fail_msg: "The status code is not 200, actual status code: {{ web_response.status }}"
+        success_msg: "The status code is 200, as expected"
+      when: web_response.status is defined
+

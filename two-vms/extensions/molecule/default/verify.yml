@@ -1,0 +1,34 @@
+---
+- name: Verify MariaDB
+  hosts: pid004
+
+  tasks:
+    - name: Check MariaDB service status
+      ansible.builtin.command: systemctl status mariadb
+      register: result
+      ignore_errors: true
+
+    - name: Assert MariaDB service is running
+      ansible.builtin.assert:
+        that:
+          - "'active (running)' in result.stdout"
+        fail_msg: "MariaDB service is not running"
+        success_msg: "MariaDB service is running"
+
+- name: Verify Apache
+  hosts: pid003
+
+  tasks:
+    - name: Verify Apache is running web requests.
+      ansible.builtin.uri:
+        url: http://localhost
+
+- name: Unsubscribe the VMs from the portal
+  hosts: pid003,pid004 
+  become: true
+
+  tasks:
+    - name: Unsubscribe the two virtualbox vms
+      community.general.redhat_subscription:
+        state: absent
+

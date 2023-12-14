@@ -1,0 +1,23 @@
+---
+- name: Install and start Apache
+  hosts: all
+  tasks:
+
+    - name: Install httpd
+      yum:
+        name: httpd
+        state: present
+
+    - name: Generate index.html
+      copy:
+        content: "Apache Web server running"
+        dest: /var/www/html/index.html
+        owner: apache
+        group: apache
+        mode: '0644'
+
+    - name: Start httpd
+      service:
+        name: httpd
+        state: started
+        enabled: yes

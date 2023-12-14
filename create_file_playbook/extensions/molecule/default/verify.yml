@@ -1,0 +1,13 @@
+---
+- name: Verify a file exists at /tmp/my_test_file.txt
+  hosts: all
+  tasks:
+    - name: Check if the file exists
+      stat:
+        path: /tmp/my_test_file.txt
+      register: file_stat
+
+    - name: Fail if the file does not exist
+      fail:
+        msg: "The file /tmp/my_test_file.txt does not exist"
+      when: not file_stat.stat.exists

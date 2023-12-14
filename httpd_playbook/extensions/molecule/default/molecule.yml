@@ -1,0 +1,23 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: podman
+lint: ansible-lint
+platforms:
+  - name: pid001
+    hostname: pid001
+    image: registry.access.redhat.com/ubi8/ubi-init:latest
+    command: /sbin/init
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    pre_build_image: true
+    published_ports:
+      - 0.0.0.0:9090:80
+provisioner:
+  name: ansible
+  config_options:
+    ssh_connection:
+      pipelining: false
+verifier:
+  name: ansible

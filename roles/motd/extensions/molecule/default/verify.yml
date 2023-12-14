@@ -1,0 +1,19 @@
+---
+- name: Verify specific line exists in a file
+  hosts: all
+  tasks:
+    - name: Slurp the file content
+      ansible.builtin.slurp:
+        src: /etc/motd
+      register: file_content
+
+    - name: Decode file content
+      set_fact:
+        file_text: "{{ file_content['content'] | b64decode }}"
+
+    - name: Verify line exists in file
+      assert:
+        that:
+          - "'This server is part of XYZ environment' in file_text"
+        fail_msg: "The line does not exist in the file"
+        success_msg: "The line exists in the file"

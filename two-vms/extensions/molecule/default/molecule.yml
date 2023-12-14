@@ -1,0 +1,28 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: vagrant
+platforms:
+  - name: pid003
+    box: generic/rhel8
+    memory: 8192
+    cpus: 4
+    provider_options:
+      linked_clone: true
+
+  - name: pid004
+    box: generic/rhel8
+    memory: 8192
+    cpus: 4
+    provider_options:
+      linked_clone: true
+
+provisioner:
+  name: ansible
+  config_options:
+    ssh_connection:
+      pipelining: false
+verifier:
+  name: ansible
+

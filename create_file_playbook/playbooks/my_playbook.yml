@@ -1,0 +1,14 @@
+---
+- name: Create a file in /tmp on RHEL systems if it does not exist
+  hosts: all
+  tasks:
+    - name: Check if the file exists
+      stat:
+        path: /tmp/my_test_file.txt
+      register: file_stat
+
+    - name: Create the file if it does not exist
+      file:
+        path: /tmp/my_test_file.txt
+        state: touch
+      when: not file_stat.stat.exists and ansible_os_family == "RedHat"
